@@ -18,11 +18,7 @@ export function createAccount(req: Request, res: Response) {
         return
     } 
     
-    // const s3 = new AWS.S3({
-    //     accessKeyId: "AKIAX2H4E4J7LMICHKWF",
-    //     secretAccessKey: "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",
-    // });
-        
+  
     // const BUCKET = 'smartinvest-documents-bucket-local';
 
     var CNICB64 = ""
