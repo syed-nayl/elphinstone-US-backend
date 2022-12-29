@@ -73,7 +73,6 @@ export async function createAccount(req: Request, res: Response) {
 
   await Promise.all(conversion_promises2).then((response) => {
     converted_objs2 = response;
-    s;
   });
 
   // obj.documents[0].content = console.log(new Buffer(converted_objs2[0].data).toString(

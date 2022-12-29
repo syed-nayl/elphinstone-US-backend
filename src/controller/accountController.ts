@@ -1,8 +1,8 @@
-import { Router } from "express"
-import { createAccount } from '../service/accountService';
+import { Router } from "express";
+import { createAccount } from "../service/accountService";
 
-const accountRouter = Router()
+const accountRouter = Router();
 
-accountRouter.post("/", createAccount )
+accountRouter.post("/", createAccount);
 
-export default accountRouter 
+export default accountRouter;
