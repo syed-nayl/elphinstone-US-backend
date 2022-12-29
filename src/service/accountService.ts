@@ -3,9 +3,11 @@ import { Request, Response, NextFunction, response } from "express";
 import axios from "axios";
 import { accountCreationSchema } from "../schemas/accountCreationSchema";
 import AWS from "aws-sdk";
+import dotenv from "dotenv";
 
 const baseURL = "https://broker-api.sandbox.alpaca.markets/";
 const ajv = new Ajv({ strict: false });
+dotenv.config();
 
 AWS.config.update({
   accessKeyId: process.env.ACCESS_KEY_ID,
@@ -16,23 +18,18 @@ const S3_BUCKET = process.env.BUCKET_NAME;
 const REGION = process.env.REGION;
 const URL_EXPIRATION_TIME = 60; // in seconds
 
+console.log("S3BUCKET", S3_BUCKET);
+
 const myBucket = new AWS.S3({
   params: { Bucket: S3_BUCKET },
   region: REGION,
 });
 
-function generatePreSignedPutUrl(fileName: string) {
-  myBucket.getSignedUrl(
-    "getObject",
-    {
-      Key: fileName,
-      ContentType: "application/pdf",
-      Expires: URL_EXPIRATION_TIME,
-    },
-    (err: Error, url: string) => {
-      return url; // API Response Here
-    }
-  );
+async function generatePreSignedPutUrl(fileName: string) {
+  return await myBucket.getSignedUrl("getObject", {
+    Key: fileName,
+    Expires: URL_EXPIRATION_TIME,
+  });
 }
 
 async function downloadPDF(pdfURL: string) {
@@ -59,17 +56,31 @@ export async function createAccount(req: Request, res: Response) {
   let converted_objs: any[] = [];
   let converted_objs2: any[] = [];
 
-  // obj.documents.map((document: any) => {
-  //   conversion_promises2.push(downloadPDF(document.content));
-  // });
+  let presignurl_promises: any[] = [];
+  let presignurls: any[] = [];
 
-  // await Promise.all(conversion_promises2).then((response) => {
-  //   converted_objs2 = response;
-  // });
+  obj.documents.map((document: any) => {
+    presignurl_promises.push(generatePreSignedPutUrl(document.content));
+  });
 
-  // obj.documents[0].content = new Buffer(converted_objs2[0].data).toString(
+  await Promise.all(presignurl_promises).then((response) => {
+    presignurls = response;
+  });
+
+  presignurls.map((url: string) => {
+    conversion_promises2.push(downloadPDF(url));
+  });
+
+  await Promise.all(conversion_promises2).then((response) => {
+    converted_objs2 = response;
+    s;
+  });
+
+  // obj.documents[0].content = console.log(new Buffer(converted_objs2[0].data).toString(
   //   "base64"
-  // );
+  // );)
+
+  // console.log(new Buffer(converted_objs2[0].data).toString("base64"));
 
   //   console.log(converted_objs2[0].data);
   //   converted_objs2.map((document: any) => {
@@ -96,8 +107,7 @@ export async function createAccount(req: Request, res: Response) {
 
   //   axios.post(baseURL + "v1/accounts", payload, {
   //     auth: {
-  //       username: "CKOFCLBDYYHDPORJ7WB4",
-  //       password: "hAi3yb7ec9MiP6C5fqWklvRb6A8PMdt1GMFgGMY9",
+  //
   //     },
   //   });
   // .then((response: any) => {
