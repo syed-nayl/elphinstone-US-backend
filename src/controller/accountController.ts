@@ -3,7 +3,6 @@ import { createAccount } from '../service/accountService';
 
 const accountRouter = Router()
 
-accountRouter.post("/createAccount", createAccount )
-
+accountRouter.post("/", createAccount )
 
 export default accountRouter 

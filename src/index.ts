@@ -21,6 +21,6 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 /**ROUTES */
-app.use('/users', accountRouter)
-app.use('/portfolio',portfolioRouter)
+app.use('/v1/accounts', accountRouter)
+app.use('/v1/portfolio',portfolioRouter)
 
