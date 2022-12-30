@@ -2,6 +2,7 @@ import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import accountRouter from "./controller/accountController";
 import portfolioRouter from "./controller/portfolioController";
+import { MongoClient } from "mongodb";
 
 dotenv.config();
 
