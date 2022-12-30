@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import accountRouter from "./controller/accountController";
 import portfolioRouter from "./controller/portfolioController";
 import { MongoClient } from "mongodb";
+import tradingRouter from "./controller/tradingController";
 
 dotenv.config();
 
@@ -24,3 +25,4 @@ app.get("/", (req: Request, res: Response) => {
 /**ROUTES */
 app.use("/v1/accounts", accountRouter);
 app.use("/v1/portfolio", portfolioRouter);
+app.use("/v1/trading", tradingRouter);
